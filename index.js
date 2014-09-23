@@ -4,13 +4,13 @@ var cas = require('connect-cas');
 var url = require('url');
 var qs = require('qs');
 
-module.exports = casModule;
+module.exports = factory;
 
-function casModule(options, callback) {
-  return new casModule.CasModule(options, callback);
+function factory(options, callback) {
+  return new factory.Construct(options, callback);
 }
 
-casModule.CasModule = function(options, callback) {
+factory.Construct = function(options, callback) {
   var apos = options.apos;
   var app = options.app;
   var self = this;
@@ -28,12 +28,23 @@ casModule.CasModule = function(options, callback) {
   if (options.client) {
     // Your CAS server's hostname must be the "host" property of this object
     cas.configure(options.client);
+
     // This route has the serviceValidate middleware, which verifies
     // that CAS authentication has taken place, and also the
     // authenticate middleware, which requests it if it has not already
     // taken place.
 
-    self._app.get('/login', cas.serviceValidate(), cas.authenticate(), function(req, res) {
+    // TODO: this method has to be declared first and is passed
+    // as middleware too soon to be overrideable.
+
+    self.disabledCheck = function(req, res, next) {
+      if (options.client.disabled) {
+        return res.send(self.renderPage(req, 'disabled', {}, 'anon'));
+      }
+      return next();
+    };
+
+    self._app.get('/login', self.disabledCheck, cas.serviceValidate(), cas.authenticate(), function(req, res) {
       var user;
       return self.unserialize(req, function(err, user) {
         if (err) {
@@ -55,7 +66,7 @@ casModule.CasModule = function(options, callback) {
 
     self.unserialize = function(req, callback) {
       var user;
-      if ((!req.session.cas) || (!req.session.cas.user)) {
+      if ((options.client.disabled) || (!req.session.cas) || (!req.session.cas.user)) {
         return callback(null);
       }
       return async.series({

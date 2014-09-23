@@ -137,6 +137,20 @@ In the `client` object above you may specify any of the fields below if needed. 
     }
 ```
 
+### Disabling Login
+
+Occasionally you may need to temporarily disable login completely. To do so, set the `disabled` option to `true`:
+
+```javascript
+    apostrophe-cas: {
+      client: {
+        disabled: true
+      }
+    }
+```
+
+This is useful during database migrations, content freezes and the like. The `disabled.html` page template will be rendered.
+
 ## Configuration as a CAS Server
 
 Configuring Apostrophe as a CAS server allows other sites to send users to Apostrophe to log in, and then redirects those users back to the other site, allowing that site to verify their username.
