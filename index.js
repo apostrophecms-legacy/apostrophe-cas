@@ -1,3 +1,5 @@
+/* jshint node:true */
+
 var _ = require('lodash');
 var async = require('async');
 var cas = require('connect-cas');
@@ -45,12 +47,12 @@ factory.Construct = function(options, callback) {
     };
 
     self._app.get('/login', self.disabledCheck, cas.serviceValidate(), cas.authenticate(), function(req, res) {
-      var user;
       return self.unserialize(req, function(err, user) {
         if (err) {
           console.error(err);
-          req.session.destroy();
-          return res.send(self.renderPage(req, 'insufficient', {}, 'anon'));
+          return req.session.regenerate(function() {
+            return res.send(self.renderPage(req, 'insufficient', {}, 'anon'));
+          });
         }
         req.user = user;
         return self._apos.authRedirectAfterLogin(req, function(url) {
@@ -162,14 +164,14 @@ factory.Construct = function(options, callback) {
 
     self.beforeCreatePerson = function(req, cas, person, callback) {
       if (options.client.createPerson.before) {
-        return options.client.createPerson.before(req, cas, user, callback);
+        return options.client.createPerson.before(req, cas, person, callback);
       }
       return callback(null);
     };
 
     self.afterCreatePerson = function(req, cas, person, callback) {
       if (options.client.createPerson.after) {
-        return options.client.createPerson.after(req, cas, user, callback);
+        return options.client.createPerson.after(req, cas, person, callback);
       }
       return callback(null);
     };
@@ -178,11 +180,12 @@ factory.Construct = function(options, callback) {
       if (!req.session) {
         return res.redirect('/');
       }
-      req.session.destroy();
-      // Send the user to the official campus-wide logout URL
-      var options = cas.configure();
-      options.pathname = options.paths.logout;
-      return res.redirect(url.format(options));
+      return req.session.regenerate(function() {
+        // Send the user to the official campus-wide logout URL
+        var options = cas.configure();
+        options.pathname = options.paths.logout;
+        return res.redirect(url.format(options));
+      });
     });
 
     self.middleware.push(
@@ -192,10 +195,9 @@ factory.Construct = function(options, callback) {
         }
         return self.unserialize(req, function(err, user) {
           if (err) {
-            req.session.destroy();
-          } else {
-            req.user = user;
+            return req.session.regenerate(function() { next(); });
           }
+          req.user = user;
           return next();
         });
       }
