@@ -183,3 +183,7 @@ The CAS server does not check that incoming requests to the `/cas/*` routes are 
 * The CAS client only obtains the username from the CAS server. No other fields are retrieved automatically. However, you can set callbacks to do more with the CAS data.
 * The CAS server support is very basic and currently only provides the username to the other site. It was built as a convenient way to test the client support.
 * There is no CAS proxy support. (Does anybody use that? What for?)
+
+## Changelog
+
+### 0.5.7: do not allow users who are in the trash or do not have the login flag to log in. The Apostrophe unserialize mechanism also checks this, but it can't hurt to be thorough.

@@ -90,7 +90,7 @@ factory.Construct = function(options, callback) {
           // Support regular database users
           return async.series({
             exists: function(callback) {
-              return self._apos.pages.findOne({ type: 'person', username: req.session.cas.user }, function(err, person) {
+              return self._apos.pages.findOne({ type: 'person', username: req.session.cas.user, login: true, trash: { $ne: true } }, function(err, person) {
                 if (err) {
                   return callback(err);
                 }
