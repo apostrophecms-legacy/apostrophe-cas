@@ -40,7 +40,7 @@ factory.Construct = function(options, callback) {
     // as middleware too soon to be overrideable.
 
     self.disabledCheck = function(req, res, next) {
-      if (options.client.disabled) {
+      if ((!options.client) || options.client.disabled) {
         return res.send(self.renderPage(req, 'disabled', {}, 'anon'));
       }
       return next();
@@ -190,6 +190,9 @@ factory.Construct = function(options, callback) {
 
     self.middleware.push(
       function(req, res, next) {
+        if ((!options.client) || (options.client.disabled)) {
+          return next();
+        }
         if (!req.session.cas) {
           return next();
         }

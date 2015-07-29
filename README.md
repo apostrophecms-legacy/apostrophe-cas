@@ -186,4 +186,6 @@ The CAS server does not check that incoming requests to the `/cas/*` routes are 
 
 ## Changelog
 
+### 0.5.8: if the `client.disabled` option is true, block existing login sessions, not just new logins.
+
 ### 0.5.7: do not allow users who are in the trash or do not have the login flag to log in. The Apostrophe unserialize mechanism also checks this, but it can't hurt to be thorough.
