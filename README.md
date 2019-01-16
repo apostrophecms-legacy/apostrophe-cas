@@ -1,6 +1,6 @@
 # apostrophe-cas
 
-**OBSOLETE — currently for Apostrophe 0.5.x only. If you need CAS support for 2.x, a pull request would be welcome. Or, consider using apostrophe-saml instead. That module can be used to integrate Apostrophe 2.x sites with Shibboleth, which may also be an available ID provider on your campus. Alternatively, use apostrophe-saml as a starting point to adapt this module to 2.x.**
+**OBSOLETE — currently for Apostrophe 0.5.x only. If you need CAS support for 2.x, a pull request would be welcome. Or, consider using [apostrophe-saml](https://www.npmjs.com/package/apostrophe-saml) instead. That module can be used to integrate Apostrophe 2.x sites with Shibboleth, which may also be an available ID provider on your campus. Alternatively, use apostrophe-saml as a starting point to adapt this module to 2.x.**
 
 This module allows an [Apostrophe](https://apostrophenow.org) site to act as a CAS client or server.
 
