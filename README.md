@@ -1,5 +1,7 @@
 # apostrophe-cas
 
+**OBSOLETE — currently for Apostrophe 0.5.x only. If you need CAS support for 2.x, a pull request would be welcome. Or, consider using apostrophe-saml instead. That module can be used to integrate Apostrophe 2.x sites with Shibboleth, which may also be an available ID provider on your campus. Alternatively, use apostrophe-saml as a starting point to adapt this module to 2.x.**
+
 This module allows an [Apostrophe](https://apostrophenow.org) site to act as a CAS client or server.
 
 Client support means that you can send users to a third party site that supports [CAS](http://www.jasig.org/cas) (Centralized Authentication Service) to log in, and then they will be logged into your Apostrophe site. This is known as "single sign-on."
