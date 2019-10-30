@@ -209,10 +209,13 @@ factory.Construct = function(options, callback) {
       var value;
       if (self._options.uniqueUsernameAttribute) {
         value = req.session.cas && req.session.cas.attributes && req.session.cas.attributes[self._options.uniqueUsernameAttribute];
+        if (value && Array.isArray(value)) {
+          value = value[0];
+        }
       } else {
         value = req.session.cas && req.session.cas.user;
       }
-      console.log('>>>', req.session.cas, self._options.uniqueUsernameAttribute, value);
+      return value;
     };
   }
 
