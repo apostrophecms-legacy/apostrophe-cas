@@ -21,8 +21,6 @@ factory.Construct = function(options, callback) {
   self._action = '/apos-cas';
   self._options = options;
 
-  self._options.uniqueUsernameAttribute = self._options.uniqueUsernameAttribute || 'user';
-
   self._ticketCache = self._apos.getCache('casTickets');
   self.middleware = [];
 
@@ -208,8 +206,11 @@ factory.Construct = function(options, callback) {
       }
     );
     self.getCasUsername = function(req) {
-      console.log(req.session.cas);
-      return req.session.cas && req.session.cas[self._options.uniqueUsernameAttribute];
+      if (self._options.uniqueUsernameAttribute) {
+        return req.session.cas && req.session.cas.attributes && req.session.cas.attributes[self._options.uniqueUsernameAttribute];
+      } else {
+        return req.session.cas && req.session.cas.user;
+      }
     };
   }
 

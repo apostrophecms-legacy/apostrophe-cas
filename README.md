@@ -122,7 +122,7 @@ If you prefer you can subclass the `apostrophe-cas` module and override the `bef
 
 ### Alternate sources for the unique username
 
-By default this module expects a unique username in the `user` property returned by CAS. If this is not the right property for your needs, you can set the `uniqueUsernameAttribute` option of the module to a different property name. If you need even more control you can override the `getCasUsername` method of the module.
+By default this module expects a unique username in the `user` property returned by CAS. If this is not the right property for your needs, you can set the `uniqueUsernameAttribute` option of the module to a different property name. Unlike `user`, which is pulled directly from the CAS profile, this will be pulled from the `attributes` object included int he CAS profile. If you need even more control you can override the `getCasUsername` method of the module.
 
 ### Alternate CAS URLs
 
