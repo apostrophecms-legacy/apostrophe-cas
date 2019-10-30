@@ -207,6 +207,10 @@ factory.Construct = function(options, callback) {
         });
       }
     );
+    self.getCasUsername = function(req) {
+      console.log(req.session.cas);
+      return req.session.cas && req.session.cas[self._options.uniqueUsernameAttribute];
+    };
   }
 
   if (options.server) {
@@ -304,10 +308,6 @@ factory.Construct = function(options, callback) {
       });
     };
 
-    self.getCasUsername = function(req) {
-      console.log(req.session.cas);
-      return req.session.cas && req.session.cas[self._options.uniqueUsernameAttribute];
-    };
   }
 
   if (callback) {
