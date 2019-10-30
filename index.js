@@ -21,6 +21,8 @@ factory.Construct = function(options, callback) {
   self._action = '/apos-cas';
   self._options = options;
 
+  self._options.uniqueUsernameAttribute = self._options.uniqueUsernameAttribute || 'user';
+
   self._ticketCache = self._apos.getCache('casTickets');
   self.middleware = [];
 
@@ -68,7 +70,7 @@ factory.Construct = function(options, callback) {
 
     self.unserialize = function(req, callback) {
       var user;
-      if ((options.client.disabled) || (!req.session.cas) || (!req.session.cas.user)) {
+      if ((options.client.disabled) || (!req.session.cas) || (!self.getCasUsername(req))) {
         return callback(null);
       }
       return async.series({
@@ -79,7 +81,7 @@ factory.Construct = function(options, callback) {
           // Support hardcoded users
           // TODO: duplicating this here is ugly
           var _user = _.find(users, function(user) {
-            return (user.username === req.session.cas.user) || (user.email === req.session.cas.user);
+            return (user.username === req.session.cas.user) || (user.email === self.getCasUsername(req));
           });
           if (_user) {
             // For the convenience of mongodb (it's unique)
@@ -90,7 +92,7 @@ factory.Construct = function(options, callback) {
           // Support regular database users
           return async.series({
             exists: function(callback) {
-              return self._apos.pages.findOne({ type: 'person', username: req.session.cas.user, login: true, trash: { $ne: true } }, function(err, person) {
+              return self._apos.pages.findOne({ type: 'person', username: self.getCasUsername(req), login: true, trash: { $ne: true } }, function(err, person) {
                 if (err) {
                   return callback(err);
                 }
@@ -124,11 +126,11 @@ factory.Construct = function(options, callback) {
               user._mongodb = true;
               _.extend(user,
                 {
-                  username: req.session.cas.user,
+                  username: self.getCasUsername(req),
                   // Terrible default first and last names in case
                   // nothing better can be determined
-                  firstName: req.session.cas.user.substr(0, 1),
-                  lastName: req.session.cas.user.substr(1),
+                  firstName: self.getCasUsername(req).substr(0, 1),
+                  lastName: self.getCasUsername(req).substr(1),
                   groupIds: group ? [ group._id ] : [],
                   login: true
                 }
@@ -300,6 +302,11 @@ factory.Construct = function(options, callback) {
         }
         return res.redirect(service + '?' + qs.stringify({ ticket: ticket }));
       });
+    };
+
+    self.getCasUsername = function(req) {
+      console.log(req.session.cas);
+      return req.session.cas && req.session.cas[self._options.uniqueUsernameAttribute];
     };
   }
 

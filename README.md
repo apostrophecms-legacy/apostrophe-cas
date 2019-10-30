@@ -120,6 +120,10 @@ There is also an `after` option, which takes the same arguments and is invoked a
 
 If you prefer you can subclass the `apostrophe-cas` module and override the `beforeCreatePerson` and `afterCreatePerson` methods in your `index.js` file. You'll need to follow the same pattern used when subclassing `apostrophe-snippets`. If this is all new to you, just use the options.
 
+### Alternate sources for the unique username
+
+By default this module expects a unique username in the `user` property returned by CAS. If this is not the right property for your needs, you can set the `uniqueUsernameAttribute` option of the module to a different property name. If you need even more control you can override the `getCasUsername` method of the module.
+
 ### Alternate CAS URLs
 
 In the `client` object above you may specify any of the fields below if needed. The defaults are shown. This is taken from the documentation of the [connect-cas](https://github.com/AceMetrix/connect-cas) module, on which the client support in `apostrophe-cas` is built.
@@ -187,6 +191,8 @@ The CAS server does not check that incoming requests to the `/cas/*` routes are 
 * There is no CAS proxy support. (Does anybody use that? What for?)
 
 ## Changelog
+
+### 0.5.9: the `uniqueUsernameAttribute` option can be used to specify a CAS attribute other than `user` to be used as the username.
 
 ### 0.5.8: if the `client.disabled` option is true, block existing login sessions, not just new logins.
 
