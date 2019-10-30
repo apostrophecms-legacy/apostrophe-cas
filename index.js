@@ -206,11 +206,13 @@ factory.Construct = function(options, callback) {
       }
     );
     self.getCasUsername = function(req) {
+      var value;
       if (self._options.uniqueUsernameAttribute) {
-        return req.session.cas && req.session.cas.attributes && req.session.cas.attributes[self._options.uniqueUsernameAttribute];
+        value = req.session.cas && req.session.cas.attributes && req.session.cas.attributes[self._options.uniqueUsernameAttribute];
       } else {
-        return req.session.cas && req.session.cas.user;
+        value = req.session.cas && req.session.cas.user;
       }
+      console.log('>>>', req.session.cas, self._options.uniqueUsernameAttribute, value);
     };
   }
 
